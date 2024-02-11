@@ -1,4 +1,4 @@
-package skeletor
+package pwsh
 
 import (
 	"fmt"
@@ -34,6 +34,7 @@ func TestMixin_ValidateSchema(t *testing.T) {
 		file      string
 		wantError string
 	}{
+		// TODO
 		{"install", "testdata/step-input.yaml", ""},
 		{"invalid property", "testdata/invalid-input.yaml", "Additional property args is not allowed"},
 	}

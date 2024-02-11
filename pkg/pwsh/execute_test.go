@@ -1,4 +1,4 @@
-package skeletor
+package pwsh
 
 import (
 	"bytes"
@@ -17,7 +17,6 @@ func TestMain(m *testing.M) {
 	test.TestMainWithMockedCommandHandlers(m)
 }
 
-// TODO: Add test cases for supported actions, we recommend install, update, uninstall and one custom action
 func TestMixin_Execute(t *testing.T) {
 	testcases := []struct {
 		name        string // Test case name
@@ -26,7 +25,9 @@ func TestMixin_Execute(t *testing.T) {
 		wantCommand string // Full command that you expect to be called based on the input YAML
 	}{
 		{"action", "testdata/step-input.yaml", "VICTORY",
-			"skeletor man-e-faces --species human"},
+			"pwsh -NonInteractive -Command Write-Host \"VICTORY\" value1 value2"},
+		{"action", "testdata/step-file.yaml", "VICTORY",
+			"pwsh -NonInteractive -File ./helper.ps1 value1 value2"},
 	}
 
 	defer os.Unsetenv(test.ExpectedCommandEnv)

@@ -1,12 +1,11 @@
-config:
-  clientVersion: v0.0.0
 install:
-  - skeletor:
+  - pwsh:
       description: "Summon Minion"
+      file: ./helper.ps1
       arguments:
-      - "man-e-faces"
-      flags:
-        species: "human"
+        - value1
+        - value2
       outputs:
         - name: "VICTORY"
           jsonPath: "$Id"
+

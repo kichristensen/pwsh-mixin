@@ -1,4 +1,4 @@
-module github.com/getporter/skeletor
+module github.com/getporter/pwsh
 
 go 1.19
 

@@ -1,0 +1,216 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "definitions": {
+    "declaration": {
+      "oneOf": [
+        {
+          "description": "Declare the pwsh mixin without configuration",
+          "type": "string",
+          "enum": ["pwsh"]
+        },
+        {"$ref": "#/definitions/config"}
+      ]
+    },
+    "config": {
+      "description": "Declare the pwsh mixin with additional configuration",
+      "type": "object",
+      "properties": {
+        "pwsh": {
+          "description": "pwsh mixin configuration",
+          "type": "object",
+          "properties": {
+            "clientVersion": {
+              "description": "Version of Powershell to install in the bundle",
+              "type": "string"
+            }
+          },
+          "additionalProperties": false
+        }
+      },
+      "additionalProperties": false,
+      "required": ["pwsh"]
+    },
+    "installStep": {
+      "type": "object",
+      "properties": {
+        "pwsh": {"$ref": "#/definitions/pwsh"}
+      },
+      "required": [
+        "pwsh"
+      ],
+      "additionalProperties": false
+    },
+    "upgradeStep": {
+      "type": "object",
+      "properties": {
+        "pwsh": {"$ref": "#/definitions/pwsh"}
+      },
+      "required": [
+        "pwsh"
+      ],
+      "additionalProperties": false
+    },
+    "invokeStep": {
+      "type": "object",
+      "properties": {
+        "pwsh": {"$ref": "#/definitions/pwsh"}
+      },
+      "required": [
+        "pwsh"
+      ],
+      "additionalProperties": false
+    },
+    "uninstallStep": {
+      "type": "object",
+      "properties": {
+        "pwsh": {"$ref": "#/definitions/pwsh"}
+      },
+      "required": [
+        "pwsh"
+      ],
+      "additionalProperties": false
+    },
+    "stepDescription": {
+      "type": "string",
+      "minLength": 1
+    },
+    "outputs": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "jsonPath": {
+            "type": "string"
+          },
+          "regex": {
+            "type": "string"
+          },
+          "path": {
+            "type": "string"
+          }
+        },
+        "additionalProperties": false,
+        "required": [
+          "name"
+        ],
+        "oneOf": [
+          { "required": [ "jsonPath" ] },
+          { "required": [ "regex" ] },
+          { "required": [ "path" ] }
+        ]
+      }
+    },
+    "pwsh": {
+      "type": "object",
+      "properties": {
+        "description": {
+          "$ref": "#/definitions/stepDescription"
+        },
+        "workingDir": {
+          "description": "The working directory",
+          "type": "string"
+        },
+        "inlineScript": {
+          "description": "Inline script to run",
+          "type": "string"
+        },
+        "file": {
+          "description": "File to run",
+          "type": "string"
+        },
+        "arguments": {
+          "description": "Arguments to pass to the script",
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "suppress-output": {
+          "description": "Suppress output",
+          "type": "boolean"
+        },
+        "ignoreError": {
+          "type": "object",
+          "properties": {
+            "all": {
+              "description": "Ignore any error that happens when the command is run",
+              "type": "boolean"
+            },
+            "exitCodes": {
+              "description": "Ignore any exit code in the list",
+              "type": "array",
+              "items": {
+                "type": "integer"
+              }
+            },
+            "output": {
+              "description": "Ignore error based on the command output",
+              "type": "object",
+              "properties": {
+                "contains": {
+                  "description": "Ignore error when stderr contains the specificed substring",
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                },
+                "regex": {
+                  "description": "Ignore error when stderr matches the specified regular expression",
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "outputs": {
+          "$ref": "#/definitions/outputs"
+        }
+      },
+      "oneOf": [
+        {
+          "required": ["inlineScript"]
+        },
+        {
+          "required": ["file"]
+        }
+      ],
+      "additionalProperties": false
+    }
+  },
+  "type": "object",
+  "properties": {
+    "install": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/installStep"
+      }
+    },
+    "upgrade": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/upgradeStep"
+      }
+    },
+    "uninstall": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/uninstallStep"
+      }
+    }
+  },
+  "patternProperties": {
+    ".*": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/invokeStep"
+      }
+    }
+  },
+  "additionalProperties": false
+}

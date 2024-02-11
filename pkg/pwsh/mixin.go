@@ -1,4 +1,4 @@
-package skeletor
+package pwsh
 
 import (
 	"get.porter.sh/porter/pkg/runtime"

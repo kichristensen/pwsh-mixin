@@ -1,10 +1,11 @@
 install:
-  - skeletor:
+  - pwsh:
       description: "Summon Minion"
+      inlineScript: |-
+        Write-Host "VICTORY"
       arguments:
-      - "man-e-faces"
-      flags:
-        species: "human"
+        - value1
+        - value2
       outputs:
         - name: "VICTORY"
           jsonPath: "$Id"

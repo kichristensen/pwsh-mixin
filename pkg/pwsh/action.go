@@ -1,6 +1,9 @@
-package skeletor
+package pwsh
 
 import (
+	"fmt"
+	"os"
+
 	"get.porter.sh/porter/pkg/exec/builder"
 )
 
@@ -14,8 +17,9 @@ type Action struct {
 
 // MarshalYAML converts the action back to a YAML representation
 // install:
-//   skeletor:
-//     ...
+//
+//	pwsh:
+//	  ...
 func (a Action) MarshalYAML() (interface{}, error) {
 	return map[string]interface{}{a.Name: a.Steps}, nil
 }
@@ -27,7 +31,7 @@ func (a Action) MakeSteps() interface{} {
 
 // UnmarshalYAML takes any yaml in this form
 // ACTION:
-// - skeletor: ...
+// - pwsh: ...
 // and puts the steps into the Action.Steps field
 func (a *Action) UnmarshalYAML(unmarshal func(interface{}) error) error {
 	results, err := builder.UnmarshalAction(unmarshal, a)
@@ -57,7 +61,7 @@ func (a Action) GetSteps() []builder.ExecutableStep {
 }
 
 type Step struct {
-	Instruction `yaml:"skeletor"`
+	Instruction `yaml:"pwsh"`
 }
 
 // Actions is a set of actions, and the steps, passed from Porter.
@@ -66,13 +70,16 @@ type Actions []Action
 // UnmarshalYAML takes chunks of a porter.yaml file associated with this mixin
 // and populates it on the current action set.
 // install:
-//   skeletor:
-//     ...
-//   skeletor:
-//     ...
+//
+//	pwsh:
+//	  ...
+//	pwsh:
+//	  ...
+//
 // upgrade:
-//   skeletor:
-//     ...
+//
+//	pwsh:
+//	  ...
 func (a *Actions) UnmarshalYAML(unmarshal func(interface{}) error) error {
 	results, err := builder.UnmarshalAction(unmarshal, Action{})
 	if err != nil {
@@ -96,27 +103,20 @@ var _ builder.ExecutableStep = Instruction{}
 var _ builder.StepWithOutputs = Instruction{}
 
 type Instruction struct {
-	Name        string   `yaml:"name"`
-	Description string   `yaml:"description"`
-	WorkingDir  string   `yaml:"dir,omitempty"`
-	Arguments   []string `yaml:"arguments,omitempty"`
+	Name           string   `yaml:"name"`
+	Description    string   `yaml:"description"`
+	WorkingDir     string   `yaml:"workingDir,omitempty"`
+	InlineScript   string   `yaml:"inlineScript,omitempty"`
+	File           string   `yaml:"file,omitempty"`
+	Arguments      []string `yaml:"arguments,omitempty"`
+	Outputs        []Output `yaml:"outputs,omitempty"`
+	SuppressOutput bool     `yaml:"suppress-output,omitempty"`
 
-	// Useful when the CLI you are calling wants some arguments to come after flags
-	// Arguments are passed first, then Flags, then SuffixArguments.
-	SuffixArguments []string `yaml:"suffix-arguments,omitempty"`
-
-	Flags          builder.Flags `yaml:"flags,omitempty"`
-	Outputs        []Output      `yaml:"outputs,omitempty"`
-	SuppressOutput bool          `yaml:"suppress-output,omitempty"`
-
-	// Allow the user to ignore some errors
-	// Adds the ignoreError functionality from the exec mixin
-	// https://release-v1.porter.sh/mixins/exec/#ignore-error
 	builder.IgnoreErrorHandler `yaml:"ignoreError,omitempty"`
 }
 
 func (s Instruction) GetCommand() string {
-	return "skeletor"
+	return "pwsh"
 }
 
 func (s Instruction) GetWorkingDir() string {
@@ -124,19 +124,38 @@ func (s Instruction) GetWorkingDir() string {
 }
 
 func (s Instruction) GetArguments() []string {
-	return s.Arguments
+	return s.getArguments()
 }
 
 func (s Instruction) GetSuffixArguments() []string {
-	return s.SuffixArguments
+	return nil
 }
 
 func (s Instruction) GetFlags() builder.Flags {
-	return s.Flags
+	return nil
 }
 
 func (s Instruction) SuppressesOutput() bool {
 	return s.SuppressOutput
+}
+
+func (s *Instruction) getArguments() []string {
+	args := make([]string, 0, len(s.Arguments)+2)
+	args = append(args, "-NonInteractive")
+	if s.InlineScript != "" {
+		args = append(args, "-Command", s.InlineScript)
+	} else if s.File != "" {
+		args = append(args, "-File", s.File)
+	} else {
+		fmt.Fprintf(os.Stderr, "inlineScript or file needs to be specified")
+		os.Exit(1)
+	}
+
+	if len(s.Arguments) > 0 {
+		args = append(args, s.Arguments...)
+	}
+
+	return args
 }
 
 func (s Instruction) GetOutputs() []builder.Output {
@@ -155,8 +174,6 @@ var _ builder.OutputRegex = Output{}
 type Output struct {
 	Name string `yaml:"name"`
 
-	// See https://porter.sh/mixins/exec/#outputs
-	// TODO: If your mixin doesn't support these output types, you can remove these and the interface assertions above, and from #/definitions/outputs in schema.json
 	JsonPath string `yaml:"jsonPath,omitempty"`
 	FilePath string `yaml:"path,omitempty"`
 	Regex    string `yaml:"regex,omitempty"`
