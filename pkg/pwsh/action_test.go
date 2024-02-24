@@ -25,6 +25,24 @@ func TestMixin_UnmarshalStep_InlineScript(t *testing.T) {
 	assert.Equal(t, Output{Name: "VICTORY", JsonPath: "$Id"}, step.Outputs[0])
 
 	assert.Equal(t, "Write-Host \"VICTORY\"", step.InlineScript)
+}
+
+func TestMixin_UnmarshalStep_InlineScript_With_Arguments(t *testing.T) {
+	b, err := os.ReadFile("testdata/step-input-with-arguments.yaml")
+	require.NoError(t, err)
+
+	var action Action
+	err = yaml.Unmarshal(b, &action)
+	require.NoError(t, err)
+	assert.Equal(t, "install", action.Name)
+	require.Len(t, action.Steps, 1)
+
+	step := action.Steps[0]
+	assert.Equal(t, "Summon Minion", step.Description)
+	assert.NotEmpty(t, step.Outputs)
+	assert.Equal(t, Output{Name: "VICTORY", JsonPath: "$Id"}, step.Outputs[0])
+
+	assert.Equal(t, "Write-Host \"VICTORY\"", step.InlineScript)
 
 	require.Len(t, step.Arguments, 2)
 	assert.Equal(t, "value1", step.Arguments[0])
@@ -33,6 +51,24 @@ func TestMixin_UnmarshalStep_InlineScript(t *testing.T) {
 
 func TestMixin_UnmarshalStep_File(t *testing.T) {
 	b, err := os.ReadFile("testdata/step-file.yaml")
+	require.NoError(t, err)
+
+	var action Action
+	err = yaml.Unmarshal(b, &action)
+	require.NoError(t, err)
+	assert.Equal(t, "install", action.Name)
+	require.Len(t, action.Steps, 1)
+
+	step := action.Steps[0]
+	assert.Equal(t, "Summon Minion", step.Description)
+	assert.NotEmpty(t, step.Outputs)
+	assert.Equal(t, Output{Name: "VICTORY", JsonPath: "$Id"}, step.Outputs[0])
+
+	assert.Equal(t, "./helper.ps1", step.File)
+}
+
+func TestMixin_UnmarshalStep_File_With_Arguments(t *testing.T) {
+	b, err := os.ReadFile("testdata/step-file-with-arguments.yaml")
 	require.NoError(t, err)
 
 	var action Action

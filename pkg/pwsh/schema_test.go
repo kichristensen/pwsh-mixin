@@ -35,6 +35,8 @@ func TestMixin_ValidateSchema(t *testing.T) {
 	}{
 		{"install-inline", "testdata/step-input.yaml", ""},
 		{"install-file", "testdata/step-file.yaml", ""},
+		{"install-inline-with-arguments", "testdata/step-input-with-arguments.yaml", ""},
+		{"install-file-with-arguments", "testdata/step-file-with-arguments.yaml", ""},
 		{"invalid inline and file", "testdata/invalid-file-and-inline.yaml", "Must validate one and only one schema"},
 		{"invalid property", "testdata/invalid-input.yaml", "Additional property args is not allowed"},
 	}

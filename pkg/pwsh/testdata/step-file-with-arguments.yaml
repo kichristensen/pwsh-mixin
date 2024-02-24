@@ -1,8 +1,11 @@
 install:
   - pwsh:
       description: "Summon Minion"
-      inlineScript: |-
-        Write-Host "VICTORY"
+      file: ./helper.ps1
+      arguments:
+        - value1
+        - value2
       outputs:
         - name: "VICTORY"
           jsonPath: "$Id"
+

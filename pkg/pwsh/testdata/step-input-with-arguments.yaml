@@ -3,6 +3,9 @@ install:
       description: "Summon Minion"
       inlineScript: |-
         Write-Host "VICTORY"
+      arguments:
+        - value1
+        - value2
       outputs:
         - name: "VICTORY"
           jsonPath: "$Id"

@@ -24,8 +24,12 @@ func TestMixin_Execute(t *testing.T) {
 		wantCommand string // Full command that you expect to be called based on the input YAML
 	}{
 		{"action", "testdata/step-input.yaml", "VICTORY",
-			"pwsh -NonInteractive -Command Write-Host \"VICTORY\" value1 value2"},
+			"pwsh -NonInteractive -Command Write-Host \"VICTORY\""},
 		{"action", "testdata/step-file.yaml", "VICTORY",
+			"pwsh -NonInteractive -File ./helper.ps1"},
+		{"action", "testdata/step-input-with-arguments.yaml", "VICTORY",
+			"pwsh -NonInteractive -Command Write-Host \"VICTORY\" value1 value2"},
+		{"action", "testdata/step-file-with-arguments.yaml", "VICTORY",
 			"pwsh -NonInteractive -File ./helper.ps1 value1 value2"},
 	}
 

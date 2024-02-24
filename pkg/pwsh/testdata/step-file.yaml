@@ -2,9 +2,6 @@ install:
   - pwsh:
       description: "Summon Minion"
       file: ./helper.ps1
-      arguments:
-        - value1
-        - value2
       outputs:
         - name: "VICTORY"
           jsonPath: "$Id"
