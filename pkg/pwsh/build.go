@@ -23,6 +23,13 @@ type BuildInput struct {
 type MixinConfig struct {
 	ClientVersion           string `yaml:"clientVersion,omitempty"`
 	InstallPsResourceModule bool
+	Modules                 []Module `yaml:"modules,omitempty"`
+}
+
+// Module represents configuration that defines modules to be installed in the pwsh mixin
+type Module struct {
+	Name    string `yaml:"name,omitempty"`
+	Version string `yaml:"version,omitempty"`
 }
 
 const buildTemplate string = `RUN --mount=type=cache,target=/var/cache/apt --mount=type=cache,target=/var/lib/apt \
@@ -36,8 +43,15 @@ RUN curl -L -o powershell.deb https://github.com/PowerShell/PowerShell/releases/
 RUN --mount=type=cache,target=/var/cache/apt --mount=type=cache,target=/var/lib/apt \
 	dpkg -i powershell.deb || apt-get install -f -y 
 RUN rm powershell.deb
-{{- if .InstallPsResourceModule }}
+{{- if and .InstallPsResourceModule .Modules }}
 RUN pwsh -NonInteractive -Command 'Install-Module -Force -Name Microsoft.PowerShell.PSResourceGet'
+{{- end }}
+{{- range .Modules}}
+{{- if .Version }}
+RUN pwsh -NonInteractive -Command 'Install-PSResource -TrustRepository -AcceptLicense -Name {{.Name}} -Version {{.Version}}'
+{{- else }}
+RUN pwsh -NonInteractive -Command 'Install-PSResource -TrustRepository -AcceptLicense -Name {{.Name}}'
+{{- end }}
 {{- end }}`
 
 // Build will generate the necessary Dockerfile lines
@@ -73,7 +87,11 @@ func (m *Mixin) Build(ctx context.Context) error {
 		}
 	}
 
-	cfg := MixinConfig{ClientVersion: input.Config.ClientVersion, InstallPsResourceModule: installPsResourceModule}
+	cfg := MixinConfig{
+		ClientVersion:           input.Config.ClientVersion,
+		InstallPsResourceModule: installPsResourceModule,
+		Modules:                 input.Config.Modules,
+	}
 	if err = tmpl.Execute(m.Out, cfg); err != nil {
 		return fmt.Errorf("error generating Dockerfile lines for the pwsh mixin: %w", err)
 	}

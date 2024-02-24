@@ -1,5 +1,9 @@
 config:
   clientVersion: 1.2.3
+  modules:
+    - name: Microsoft.Graph
+    - name: Microsoft.Graph.Beta
+      version: 1.2.3
 
 actions:
   install: []
