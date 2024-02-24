@@ -6,6 +6,7 @@ import (
 	"text/template"
 
 	"get.porter.sh/porter/pkg/exec/builder"
+	semver "github.com/Masterminds/semver/v3"
 	"gopkg.in/yaml.v2"
 )
 
@@ -20,7 +21,8 @@ type BuildInput struct {
 //	  clientVersion: "v0.0.0"
 
 type MixinConfig struct {
-	ClientVersion string `yaml:"clientVersion,omitempty"`
+	ClientVersion           string `yaml:"clientVersion,omitempty"`
+	InstallPsResourceModule bool
 }
 
 const buildTemplate string = `RUN --mount=type=cache,target=/var/cache/apt --mount=type=cache,target=/var/lib/apt \
@@ -33,7 +35,10 @@ RUN curl -L -o powershell.deb https://github.com/PowerShell/PowerShell/releases/
 {{- end }}
 RUN --mount=type=cache,target=/var/cache/apt --mount=type=cache,target=/var/lib/apt \
 	dpkg -i powershell.deb || apt-get install -f -y 
-RUN rm powershell.deb`
+RUN rm powershell.deb
+{{- if .InstallPsResourceModule }}
+RUN pwsh -NonInteractive -Command 'Install-Module -Force -Name Microsoft.PowerShell.PSResourceGet'
+{{- end }}`
 
 // Build will generate the necessary Dockerfile lines
 // for an invocation image using this mixin
@@ -51,13 +56,26 @@ func (m *Mixin) Build(ctx context.Context) error {
 	}
 
 	tmpl, err := template.New("dockerfile").Parse(buildTemplate)
+	installPsResourceModule := false
 	if err != nil {
-		return fmt.Errorf("error parsing Dockerfile template for the az mixin: %w", err)
+		return fmt.Errorf("error parsing Dockerfile template for the pwsh mixin: %w", err)
 	}
 
-	cfg := MixinConfig{ClientVersion: input.Config.ClientVersion}
+	if input.Config.ClientVersion != "" {
+		clientVersion, err := semver.StrictNewVersion(input.Config.ClientVersion)
+		if err != nil {
+			return fmt.Errorf("error parsing client version for the pwsh mixin: %w", err)
+		}
+
+		pwshVersionWithPsResource, _ := semver.StrictNewVersion("7.4.0")
+		if clientVersion.LessThan(pwshVersionWithPsResource) {
+			installPsResourceModule = true
+		}
+	}
+
+	cfg := MixinConfig{ClientVersion: input.Config.ClientVersion, InstallPsResourceModule: installPsResourceModule}
 	if err = tmpl.Execute(m.Out, cfg); err != nil {
-		return fmt.Errorf("error generating Dockerfile lines for the az mixin: %w", err)
+		return fmt.Errorf("error generating Dockerfile lines for the pwsh mixin: %w", err)
 	}
 
 	return nil

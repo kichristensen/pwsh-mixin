@@ -17,6 +17,7 @@ func TestMixin_Build(t *testing.T) {
 		wantOutputFile string
 	}{
 		{name: "build with config", inputFile: "testdata/build-input-with-config.yaml", wantOutputFile: "testdata/build-with-config.txt"},
+		{name: "build with config wihtout psresource", inputFile: "testdata/build-input-with-config-without-psresource.yaml", wantOutputFile: "testdata/build-with-config-without-psresource.txt"},
 		{name: "build without config", inputFile: "testdata/build-input-without-config.yaml", wantOutputFile: "testdata/build-without-config.txt"},
 	}
 

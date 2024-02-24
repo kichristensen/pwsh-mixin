@@ -1,5 +1,5 @@
 config:
-  clientVersion: 7.4.0
+  clientVersion: 1.2.3
 
 actions:
   install: []

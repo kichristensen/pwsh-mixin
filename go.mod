@@ -11,6 +11,7 @@ replace github.com/spf13/viper => github.com/getporter/viper v1.7.1-porter.2.0.2
 require (
 	get.porter.sh/magefiles v0.5.1
 	get.porter.sh/porter v1.0.9
+	github.com/Masterminds/semver/v3 v3.2.0
 	github.com/ghodss/yaml v1.0.0
 	github.com/spf13/cobra v1.6.1
 	github.com/stretchr/testify v1.8.1
@@ -22,7 +23,6 @@ require (
 require (
 	github.com/Azure/go-ansiterm v0.0.0-20210617225240-d185dfc1b5a1 // indirect
 	github.com/Masterminds/semver v1.5.0 // indirect
-	github.com/Masterminds/semver/v3 v3.2.0 // indirect
 	github.com/PaesslerAG/gval v1.0.0 // indirect
 	github.com/PaesslerAG/jsonpath v0.1.1 // indirect
 	github.com/PuerkitoBio/goquery v1.8.0 // indirect
