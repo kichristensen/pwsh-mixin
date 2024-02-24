@@ -1,0 +1,6 @@
+RUN --mount=type=cache,target=/var/cache/apt --mount=type=cache,target=/var/lib/apt \
+	apt-get update && apt-get install -y curl
+RUN curl -L -o powershell.deb https://github.com/PowerShell/PowerShell/releases/download/v1.2.3/powershell_1.2.3-1.deb_amd64.deb
+RUN --mount=type=cache,target=/var/cache/apt --mount=type=cache,target=/var/lib/apt \
+	dpkg -i powershell.deb || apt-get install -f -y 
+RUN rm powershell.deb

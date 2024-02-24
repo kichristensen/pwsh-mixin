@@ -1,0 +1,7 @@
+config:
+  clientVersion: 1.2.3
+
+actions:
+  install: []
+  uninstall: []
+  upgrade: []

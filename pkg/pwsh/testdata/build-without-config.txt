@@ -1,0 +1,7 @@
+RUN --mount=type=cache,target=/var/cache/apt --mount=type=cache,target=/var/lib/apt \
+	apt-get update && apt-get install -y curl
+RUN URL=$(curl -s https://api.github.com/repos/powershell/powershell/releases/latest | grep 'browser_download_url.*deb' | cut -d : -f 2,3 | tr -d \" | head -n 1) && \
+	curl -L -o powershell.deb $URL
+RUN --mount=type=cache,target=/var/cache/apt --mount=type=cache,target=/var/lib/apt \
+	dpkg -i powershell.deb || apt-get install -f -y 
+RUN rm powershell.deb

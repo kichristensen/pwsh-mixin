@@ -23,19 +23,17 @@ type MixinConfig struct {
 	ClientVersion string `yaml:"clientVersion,omitempty"`
 }
 
-const buildTemplate string = `
-RUN --mount=type=cache,target=/var/cache/apt --mount=type=cache,target=/var/lib/apt \
+const buildTemplate string = `RUN --mount=type=cache,target=/var/cache/apt --mount=type=cache,target=/var/lib/apt \
 	apt-get update && apt-get install -y curl
-{{ if eq .ClientVersion "" }}
+{{- if eq .ClientVersion "" }}
 RUN URL=$(curl -s https://api.github.com/repos/powershell/powershell/releases/latest | grep 'browser_download_url.*deb' | cut -d : -f 2,3 | tr -d \" | head -n 1) && \
 	curl -L -o powershell.deb $URL
-{{ else }}
+{{- else }}
 RUN curl -L -o powershell.deb https://github.com/PowerShell/PowerShell/releases/download/v{{.ClientVersion}}/powershell_{{.ClientVersion}}-1.deb_amd64.deb
-{{ end }}
+{{- end }}
 RUN --mount=type=cache,target=/var/cache/apt --mount=type=cache,target=/var/lib/apt \
 	dpkg -i powershell.deb || apt-get install -f -y 
-RUN rm powershell.deb
-`
+RUN rm powershell.deb`
 
 // Build will generate the necessary Dockerfile lines
 // for an invocation image using this mixin
