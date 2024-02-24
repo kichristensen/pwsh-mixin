@@ -1,7 +1,7 @@
 package pwsh
 
 import (
-	"io/ioutil"
+	"os"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -10,7 +10,7 @@ import (
 )
 
 func TestMixin_UnmarshalStep_InlineScript(t *testing.T) {
-	b, err := ioutil.ReadFile("testdata/step-input.yaml")
+	b, err := os.ReadFile("testdata/step-input.yaml")
 	require.NoError(t, err)
 
 	var action Action
@@ -32,7 +32,7 @@ func TestMixin_UnmarshalStep_InlineScript(t *testing.T) {
 }
 
 func TestMixin_UnmarshalStep_File(t *testing.T) {
-	b, err := ioutil.ReadFile("testdata/step-file.yaml")
+	b, err := os.ReadFile("testdata/step-file.yaml")
 	require.NoError(t, err)
 
 	var action Action

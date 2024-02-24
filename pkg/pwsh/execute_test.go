@@ -3,7 +3,6 @@ package pwsh
 import (
 	"bytes"
 	"context"
-	"io/ioutil"
 	"os"
 	"path"
 	"testing"
@@ -20,7 +19,7 @@ func TestMain(m *testing.M) {
 func TestMixin_Execute(t *testing.T) {
 	testcases := []struct {
 		name        string // Test case name
-		file        string // Path to th test input yaml
+		file        string // Path to the test input yaml
 		wantOutput  string // Name of output that you expect to be created
 		wantCommand string // Full command that you expect to be called based on the input YAML
 	}{
@@ -37,7 +36,7 @@ func TestMixin_Execute(t *testing.T) {
 			m := NewTestMixin(t)
 
 			m.Setenv(test.ExpectedCommandEnv, tc.wantCommand)
-			mixinInputB, err := ioutil.ReadFile(tc.file)
+			mixinInputB, err := os.ReadFile(tc.file)
 			require.NoError(t, err)
 
 			m.In = bytes.NewBuffer(mixinInputB)

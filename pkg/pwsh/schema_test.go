@@ -2,7 +2,7 @@ package pwsh
 
 import (
 	"fmt"
-	"io/ioutil"
+	"os"
 	"testing"
 
 	"github.com/ghodss/yaml" // We are not using go-yaml because of serialization problems with jsonschema, don't use this library elsewhere
@@ -17,7 +17,7 @@ func TestMixin_PrintSchema(t *testing.T) {
 	m.PrintSchema()
 	gotSchema := m.TestContext.GetOutput()
 
-	wantSchema, err := ioutil.ReadFile("schema/schema.json")
+	wantSchema, err := os.ReadFile("schema/schema.json")
 	require.NoError(t, err)
 
 	assert.Equal(t, string(wantSchema), gotSchema)
@@ -27,22 +27,22 @@ func TestMixin_ValidateSchema(t *testing.T) {
 	// Load the mixin schema
 	schemaLoader := gojsonschema.NewStringLoader(schema)
 
-	// TODO: Add testcases for any other action inputs you have in testdata
 	// This validates that your schema.json is filled in properly
 	testcases := []struct {
 		name      string
 		file      string
 		wantError string
 	}{
-		// TODO
-		{"install", "testdata/step-input.yaml", ""},
+		{"install-inline", "testdata/step-input.yaml", ""},
+		{"install-file", "testdata/step-file.yaml", ""},
+		{"invalid inline and file", "testdata/invalid-file-and-inline.yaml", "Must validate one and only one schema"},
 		{"invalid property", "testdata/invalid-input.yaml", "Additional property args is not allowed"},
 	}
 
 	for _, tc := range testcases {
 		t.Run(tc.name, func(t *testing.T) {
 			// Read the mixin input as a go dump
-			mixinInputB, err := ioutil.ReadFile(tc.file)
+			mixinInputB, err := os.ReadFile(tc.file)
 			require.NoError(t, err)
 			mixinInputMap := make(map[string]interface{})
 			err = yaml.Unmarshal(mixinInputB, &mixinInputMap)
