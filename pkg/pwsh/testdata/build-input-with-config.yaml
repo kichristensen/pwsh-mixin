@@ -1,7 +1,7 @@
 config:
   clientVersion: 7.4.0
   modules:
-    - name: Microsoft.Graph
+    - Microsoft.Graph
     - name: Microsoft.Graph.Beta
       version: 1.2.3
 

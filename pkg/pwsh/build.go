@@ -32,6 +32,21 @@ type Module struct {
 	Version string `yaml:"version,omitempty"`
 }
 
+func (m *Module) UnmarshalYAML(unmarshal func(interface{}) error) error {
+	var name string
+	if err := unmarshal(&name); err == nil {
+		m.Name = name
+		return nil
+	}
+
+	type rawModule Module
+	if err := unmarshal((*rawModule)(m)); err != nil {
+		return err
+	}
+
+	return nil
+}
+
 const buildTemplate string = `RUN --mount=type=cache,target=/var/cache/apt --mount=type=cache,target=/var/lib/apt \
 	apt-get update && apt-get install -y curl
 {{- if eq .ClientVersion "" }}
