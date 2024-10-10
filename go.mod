@@ -11,8 +11,8 @@ toolchain go1.21.3
 replace github.com/spf13/viper => github.com/getporter/viper v1.7.1-porter.2.0.20210514172839-3ea827168363
 
 require (
-	get.porter.sh/magefiles v0.6.7
-	get.porter.sh/porter v1.1.0
+	get.porter.sh/magefiles v0.6.8
+	get.porter.sh/porter v1.1.1
 	github.com/Masterminds/semver/v3 v3.2.1
 	github.com/ghodss/yaml v1.0.0
 	github.com/spf13/cobra v1.7.0
