@@ -63,9 +63,9 @@ RUN pwsh -NonInteractive -Command 'Install-Module -Force -Name Microsoft.PowerSh
 {{- end }}
 {{- range .Modules}}
 {{- if .Version }}
-RUN pwsh -NonInteractive -Command 'Install-PSResource -TrustRepository -AcceptLicense -Name {{.Name}} -Version {{.Version}}'
+RUN pwsh -NonInteractive -Command 'Install-PSResource -TrustRepository -AcceptLicense -Scope AllUsers -Name {{.Name}} -Version {{.Version}}'
 {{- else }}
-RUN pwsh -NonInteractive -Command 'Install-PSResource -TrustRepository -AcceptLicense -Name {{.Name}}'
+RUN pwsh -NonInteractive -Command 'Install-PSResource -TrustRepository -AcceptLicense -Scope AllUsers -Name {{.Name}}'
 {{- end }}
 {{- end }}`
 
