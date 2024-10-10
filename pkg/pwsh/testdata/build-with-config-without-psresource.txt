@@ -5,5 +5,5 @@ RUN --mount=type=cache,target=/var/cache/apt --mount=type=cache,target=/var/lib/
 	dpkg -i powershell.deb || apt-get install -f -y 
 RUN rm powershell.deb
 RUN pwsh -NonInteractive -Command 'Install-Module -Force -Name Microsoft.PowerShell.PSResourceGet'
-RUN pwsh -NonInteractive -Command 'Install-PSResource -TrustRepository -AcceptLicense -Name Microsoft.Graph'
-RUN pwsh -NonInteractive -Command 'Install-PSResource -TrustRepository -AcceptLicense -Name Microsoft.Graph.Beta -Version 1.2.3'
+RUN pwsh -NonInteractive -Command 'Install-PSResource -TrustRepository -AcceptLicense -Scope AllUsers -Name Microsoft.Graph'
+RUN pwsh -NonInteractive -Command 'Install-PSResource -TrustRepository -AcceptLicense -Scope AllUsers -Name Microsoft.Graph.Beta -Version 1.2.3'
