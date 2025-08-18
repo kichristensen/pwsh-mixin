@@ -13,7 +13,7 @@ replace github.com/spf13/viper => github.com/getporter/viper v1.7.1-porter.2.0.2
 require (
 	get.porter.sh/magefiles v0.6.10
 	get.porter.sh/porter v1.2.1
-	github.com/Masterminds/semver/v3 v3.3.1
+	github.com/Masterminds/semver/v3 v3.4.0
 	github.com/ghodss/yaml v1.0.0
 	github.com/spf13/cobra v1.9.1
 	github.com/stretchr/testify v1.10.0
