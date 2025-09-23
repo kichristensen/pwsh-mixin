@@ -2,8 +2,6 @@ module github.com/getporter/pwsh
 
 go 1.23.3
 
-toolchain go1.23.3
-
 // These are replace directives copied from porter
 // When you use a newer version of Porter, if you run into trouble with go mod tidy
 // Copy any additional replace directives from Porter's go.mod file
