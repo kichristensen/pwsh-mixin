@@ -14,7 +14,7 @@ require (
 	github.com/Masterminds/semver/v3 v3.5.0
 	github.com/ghodss/yaml v1.0.0
 	github.com/spf13/cobra v1.10.2
-	github.com/stretchr/testify v1.11.1
+	github.com/stretchr/testify v1.12.0
 	github.com/xeipuuv/gojsonschema v1.2.0
 	go.opentelemetry.io/otel v1.45.0
 	gopkg.in/yaml.v2 v2.4.0
@@ -33,7 +33,6 @@ require (
 	github.com/cnabio/cnab-go v0.26.4 // indirect
 	github.com/cnabio/cnab-to-oci v0.6.0 // indirect
 	github.com/cyberphone/json-canonicalization v0.0.0-20241213102144-19d51d7fe467 // indirect
-	github.com/davecgh/go-spew v1.1.2-0.20180830191138-d8f796af33cc // indirect
 	github.com/distribution/reference v0.6.1-0.20240718132515-8c942b0459df // indirect
 	github.com/dustin/go-humanize v1.0.1 // indirect
 	github.com/fatih/color v1.19.0 // indirect
@@ -69,7 +68,6 @@ require (
 	github.com/osteele/tuesday v1.0.4 // indirect
 	github.com/pelletier/go-toml v1.9.5 // indirect
 	github.com/pkg/errors v0.9.1 // indirect
-	github.com/pmezard/go-difflib v1.0.1-0.20181226105442-5d4384ee4fb2 // indirect
 	github.com/qri-io/jsonpointer v0.1.1 // indirect
 	github.com/qri-io/jsonschema v0.2.2-0.20210831022256-780655b2ba0e // indirect
 	github.com/sergi/go-diff v1.4.0 // indirect
